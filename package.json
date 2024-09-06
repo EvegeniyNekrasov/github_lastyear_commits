@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.54.1",
+    "@tanstack/react-table": "^8.20.5",
     "dotenv": "^16.4.5",
     "octokit": "^4.0.2",
     "react": "^18.3.1",

@@ -7,10 +7,16 @@ const octokit = new Octokit({
 
 const getTestData = async () => {
   try {
-    const result = await octokit.request('GET /repos/{owner}/{repo}/issues', {
-      owner: 'octocat',
-      repo: 'Spoon-Knife',
-    });
+    const result = await octokit.request(
+      'GET /repos/{owner}/{repo}/stats/commit_activity',
+      {
+        owner: 'EvegeniyNekrasov',
+        repo: 'dotfiles',
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      },
+    );
     return result;
   } catch (error) {
     console.log(
@@ -19,7 +25,7 @@ const getTestData = async () => {
   }
 };
 
-const OCTOKIT_KEY = 'test_oktokit';
+const OCTOKIT_KEY = 'yev';
 
 export default function useGetTestOctokit() {
   const query = useQuery({
