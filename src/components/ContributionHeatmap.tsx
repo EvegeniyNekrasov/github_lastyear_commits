@@ -1,12 +1,14 @@
 import type React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   DAYS_OF_WEEK,
   generateHeatMapGrid,
   getColorForContributions,
+  getWeekNumberFromTimestamp,
 } from '../utils/common';
 
+import type { HeatDayData, RestApiResponse } from '../types';
 import Cell from './ui/Cell';
 import DayLabel from './ui/DayLabel';
 import DayLabels from './ui/DayLabels';
@@ -14,9 +16,45 @@ import GridHeapMap from './ui/GridHeapMap';
 import HeatMap from './ui/HeatMap';
 import WeekRow from './ui/WeekRow';
 
-const ContributionHeatmap: React.FC = () => {
-  const heatMapData = generateHeatMapGrid();
-  const [data, setData] = useState(heatMapData);
+interface ContributionHeatMapProps {
+  data: RestApiResponse[] | null;
+}
+
+/*
+  TODO:
+    [] - refactor the useEffect logic
+    [] - pass contributions number to cell
+    [] - create a hover for the cell to show contributions of the day
+    [] - create a cleanInitialData function to stablish every contribution to 0
+*/
+
+const ContributionHeatmap: React.FC<ContributionHeatMapProps> = ({ data }) => {
+  const heatMapData = generateHeatMapGrid(); // generate initial data to fill the heatmap
+  const [initialData, setInitialData] = useState<HeatDayData[][]>(heatMapData);
+
+  useEffect(() => {
+    if (data) {
+      // TODO: refactor this ugly logic
+      setInitialData((prevData) => {
+        const newData = [...prevData];
+
+        for (const dataItem of data) {
+          const weekNumberFromData = getWeekNumberFromTimestamp(dataItem.week);
+
+          for (const newDataItem of newData) {
+            for (const item of newDataItem) {
+              if (item !== null) {
+                if (item.week === weekNumberFromData) {
+                  item.contributions = dataItem.days[item.dayOfWeek];
+                }
+              }
+            }
+          }
+        }
+        return newData;
+      });
+    }
+  }, [data]);
 
   return (
     <HeatMap>
@@ -26,7 +64,7 @@ const ContributionHeatmap: React.FC = () => {
         ))}
       </DayLabels>
       <GridHeapMap>
-        {data.map((week, weekIndex) => (
+        {initialData.map((week, weekIndex) => (
           <WeekRow key={`week-${weekIndex + 1}`}>
             {week.map((day, dayIndex) => (
               <Cell

@@ -1,4 +1,11 @@
 export type HeatDayData = {
-  day: number;
   contributions: number;
+  week: number,
+  dayOfWeek: number
+};
+
+export type RestApiResponse = {
+  days: number[];
+  total: number;
+  week: number;
 };

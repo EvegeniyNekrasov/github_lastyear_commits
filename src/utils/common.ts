@@ -2,6 +2,7 @@ import {
   DAYS,
   LEAP_YEAR_DAYS,
   NORMAL_YEAR_DAYS,
+  ONE_DAY,
   WEEKS,
   gh_colors,
 } from '../constants';
@@ -55,58 +56,80 @@ const currentYearDays = (): number => {
 };
 
 /**
- * Generates a grid representing the heatmap data for contributions throughout the year.
+ * Creates a `HeatDayData` object for a specific day in the year and week.
  *
- * The grid consists of an array of arrays where each sub-array represents a week and each
- * element within that array represents a day. The function calculates the start of the year
- * and fills the grid with `null` initially. It then iterates over the weeks and days, assigning
- * contribution data for each day, including a predefined number of contributions for specific days.
+ * @param dayNumberOfYear - The day number of the year, where 0 represents January 1st.
+ * @param week - The week number of the year, starting from 1.
+ * @returns A `HeatDayData` object representing a day in the heat map grid.
  *
- * - The heatmap grid size is based on the constants `DAYS` (days per week) and `WEEKS` (weeks in a year).
- * - The first day of the year is determined to align the grid with the correct starting day.
- *
- * @function generateHeatMapGrid
- * @returns {Array<Array<HeatDayData | null>>} - A 2D array where each element is an object containing the day's contribution data or `null` if no data is available.
- *
- * @typedef {Object} HeatDayData
- * @property {number} day - The day of the week (0-6, Sunday to Saturday).
- * @property {number} contributions - The number of contributions for the day.
+ * The `HeatDayData` object includes:
+ * - `contributions`: Initialized to 0, representing the number of contributions for the day.
+ * - `week`: The week number for the day.
+ * - `dayOfWeek`: Calculated by mapping `dayNumberOfYear` to the corresponding day of the week.
+ *   The result is in the range [0, 6], where 0 represents Sunday and 6 represents Saturday.
  */
-export function generateHeatMapGrid() {
-  const heatMapData = [];
+const createHearDayData = (
+  dayNumberOfYear: number,
+  week: number,
+): HeatDayData => {
+  return {
+    contributions: 0,
+    week,
+    dayOfWeek: (dayNumberOfYear + 6) % 7, // Mapping dayNumberOfYear to day of week (0: Sunady, 6: Saturday)
+  };
+};
 
-  for (let i = 0; i < DAYS; i++) {
-    heatMapData.push(new Array(WEEKS).fill(null));
-  }
+/**
+ * Generates a 2D grid representing the heat map for the entire year.
+ *
+ * The grid is structured as a matrix where each row represents a day of the year
+ * and each column represents a week of the year. The grid is populated with `HeatDayData`
+ * objects, which are created for each day and week.
+ *
+ * The function performs the following steps:
+ * 1. Initializes a 2D array (`heatMapData`) with null values.
+ * 2. Determines the starting day of the year and iterates through weeks and days.
+ * 3. For each valid day, a `HeatDayData` object is created and inserted into the grid.
+ * 4. The `dayOfWeek` is incremented cyclically from 0 (Sunday) to 6 (Saturday).
+ * 5. Stops populating the grid once the number of days exceeds the total days in the year.
+ *
+ * @returns A 2D array (`HeatDayData[][]`) representing the heat map grid for the year.
+ *
+ * Each element in the grid is a `HeatDayData` object, or `null` if no data is assigned.
+ *
+ * Note:
+ * - The grid dimensions are based on constants `DAYS` (number of days in the year) and `WEEKS` (number of weeks in the year).
+ * - `createHeatDayData` is used to initialize each day's data in the grid.
+ */
+
+export const generateHeatMapGrid = () => {
+  const heatMapData: HeatDayData[][] = Array.from({ length: DAYS }, () =>
+    Array(WEEKS).fill(null),
+  );
 
   const startOfYear = new Date(new Date().getFullYear(), 0, 1);
   let dayOfWeek = startOfYear.getDay();
-
   let currentDay = 0;
 
   for (let week = 0; week < WEEKS; week++) {
     for (let day = 0; day < DAYS; day++) {
-      if (week === 0 && day === 0 && day < dayOfWeek) {
+      if (week === 0 && day < dayOfWeek) {
         continue;
       }
 
       if (currentDay >= currentYearDays()) {
-        break;
+        return heatMapData;
       }
 
-      const dayData: HeatDayData = {
-        day: dayOfWeek,
-        contributions: day === 5 ? 40 : 0,
-      };
+      heatMapData[day][week] = createHearDayData(dayOfWeek, week + 1);
+      dayOfWeek = (dayOfWeek + 1) % 7;
 
-      heatMapData[day][week] = dayData;
-      dayOfWeek++;
       currentDay++;
     }
   }
 
   return heatMapData;
-}
+};
 
 /**
  * Defines the contribution ranges and their corresponding colors for a contribution heatmap.
@@ -148,4 +171,39 @@ export const getColorForContributions = (contributions: number): string => {
     contributionRanges.find((range) => contributions <= range.limit)?.color ||
     gh_colors[0]
   );
+};
+
+/**
+ * Calculates the week number of the year from a Unix timestamp.
+ *
+ * The function converts a Unix timestamp (which is in seconds) into a JavaScript `Date` object,
+ * and then determines the week number of the year for that date. The week number is calculated
+ * by finding the number of days since the start of the year and dividing by 7.
+ *
+ * @param timestamp - The Unix timestamp representing the date, in seconds.
+ * @returns The week number of the year, starting from 1 for the first week.
+ *
+ * The function performs the following steps:
+ * 1. Converts the Unix timestamp (in seconds) to milliseconds and creates a `Date` object.
+ * 2. Creates a reference `Date` object set to January 1st of the same year at midnight.
+ * 3. Calculates the number of days between the given date and the reference date.
+ * 4. Computes the week number by dividing the number of days by 7 and rounding up.
+ *
+ * Note:
+ * - The Unix timestamp is multiplied by 1000 to convert from seconds to milliseconds.
+ * - The constant `ONE_DAY` should be defined as the number of milliseconds in a day (e.g., `24 * 60 * 60 * 1000`).
+ * - Week numbers start from 1. The first week of the year is week 1.
+ */
+export const getWeekNumberFromTimestamp = (timestamp: number): number => {
+  const date = new Date(timestamp * 1000);
+
+  const dateCopy = new Date(date.getTime());
+
+  dateCopy.setMonth(0, 1);
+  dateCopy.setHours(0, 0, 0, 0);
+
+  const days = Math.floor((date.getTime() - dateCopy.getTime()) / ONE_DAY);
+  const weekNumber = Math.ceil((days + 1) / 7);
+
+  return weekNumber;
 };
