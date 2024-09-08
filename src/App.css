@@ -4,22 +4,30 @@
     box-sizing: border-box;
 }
 
+:root {
+    --base-color-neutral-13: #1f2328;
+    --base-color-neutral-11: #393f46;
+    --base-color-neutral-8: #818b98;
+    --base-color-neutral-3: #e6eaef;
+    --base-color-blue-5: #0969da;
+}
+
 html {
     font-family: "Roboto", sans-serif;
     font-size: 14px;
 }
 
 body {
-    color: #252525;
+    color: var(--base-color-neutral-13);
 }
 
 a {
     text-decoration: none;
-    color: #252525;
+    color: var(--base-color-neutral-13);
 }
 
 a:hover {
-    color: blue;
+    color: var(--base-color-blue-5);
 }
 
 main {
@@ -40,7 +48,7 @@ main {
 
 .heatmap-wrapper {
     padding: 20px;
-    border: 0.5px solid black;
+    border: 0.5px solid var(--base-color-neutral-8);
     border-radius: 4px;
     display: flex;
     flex-direction: column;

@@ -7,6 +7,7 @@ import useGetContributions from './hooks/useGetContributions';
 import './App.css';
 import HeatMapLegend from './components/HeatMapLegend';
 import Flex from './components/ui/Flex';
+import LoadingSpinner from './components/ui/LoadingSpinner';
 
 const App = () => {
   const [owner, setOwner] = useState<string>('');
@@ -57,7 +58,12 @@ const App = () => {
           </button>
         </div>
         <div className="heatmap-wrapper">
-          {isFetching ? <span>Loading data...</span> : null}
+          {isFetching ? (
+            <Flex gap="8px">
+              <LoadingSpinner />
+              <span>loading...</span>
+            </Flex>
+          ) : null}
           {heatMapHeader !== '' ? (
             <span>
               {owner.toLocaleUpperCase()}/{repo.toLocaleUpperCase()}
