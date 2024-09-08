@@ -6,6 +6,7 @@ import useGetContributions from './hooks/useGetContributions';
 
 import './App.css';
 import HeatMapLegend from './components/HeatMapLegend';
+import Banner from './components/ui/Banner';
 import Flex from './components/ui/Flex';
 import LoadingSpinner from './components/ui/LoadingSpinner';
 
@@ -13,28 +14,44 @@ const App = () => {
   const [owner, setOwner] = useState<string>('');
   const [repo, setRepo] = useState<string>('');
   const [restData, setRestData] = useState<RestApiResponse[] | null>(null);
-  const [heatMapHeader, setHeatMapHeader] = useState<string>('');
 
-  const { data, isFetching, refetch } = useGetContributions(owner, repo);
+  const { data, isFetching, refetch } = useGetContributions(
+    owner.trim(),
+    repo.trim(),
+  );
 
   useEffect(() => {
     if (data && Array.isArray(data.data)) {
       setRestData(data.data as RestApiResponse[]);
-      setHeatMapHeader(`${owner}/${repo}`);
-      setOwner('');
-      setRepo('');
     }
-  }, [data, owner, repo]);
+  }, [data]);
 
   const handleFetchData = () => {
     if (owner !== '' && repo !== '') {
       refetch();
+      setOwner('');
+      setRepo('');
     }
   };
 
   return (
     <main>
       <div className="wrapper">
+        <Banner>
+          <span style={{ width: '80ch' }}>
+            This projects can only be used for repositories with fewer than
+            <b>10,000 commits</b>. If the repository contains <b>10,000</b> or
+            more commits, a 422 status code will be returned. For more details:{' '}
+            <a
+              style={{ color: 'var(--base-color-blue-5)' }}
+              href="https://docs.github.com/en/rest/metrics/statistics?apiVersion=2022-11-28"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Github REST API docs
+            </a>
+          </span>
+        </Banner>
         <div className="form-wrapper">
           <label>
             <span>Owner</span>
@@ -53,22 +70,18 @@ const App = () => {
               onChange={(e) => setRepo(e.target.value)}
             />
           </label>
-          <button type="button" onClick={handleFetchData}>
-            search
+          <button disabled={isFetching} type="button" onClick={handleFetchData}>
+            {isFetching ? (
+              <Flex gap="8px">
+                <LoadingSpinner />
+                <span>Loading...</span>
+              </Flex>
+            ) : (
+              'Search'
+            )}
           </button>
         </div>
         <div className="heatmap-wrapper">
-          {isFetching ? (
-            <Flex gap="8px">
-              <LoadingSpinner />
-              <span>loading...</span>
-            </Flex>
-          ) : null}
-          {heatMapHeader !== '' ? (
-            <span>
-              {owner.toLocaleUpperCase()}/{repo.toLocaleUpperCase()}
-            </span>
-          ) : null}
           <ContributionHeatmap data={restData} />
           <Flex justifyContent="space-between">
             <a

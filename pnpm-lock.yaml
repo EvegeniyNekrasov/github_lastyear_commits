@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@primer/octicons-react':
+        specifier: ^19.11.0
+        version: 19.11.0(react@18.3.1)
       '@tanstack/react-query':
         specifier: ^5.54.1
         version: 5.54.1(react@18.3.1)
@@ -231,6 +234,12 @@ packages:
   '@octokit/webhooks@13.3.0':
     resolution: {integrity: sha512-TUkJLtI163Bz5+JK0O+zDkQpn4gKwN+BovclUvCj6pI/6RXrFqQvUMRS2M+Rt8Rv0qR3wjoMoOPmpJKeOh0nBg==}
     engines: {node: '>= 18'}
+
+  '@primer/octicons-react@19.11.0':
+    resolution: {integrity: sha512-8PpCz7cpYY2GCGnJ/G9UARh9PH4C290l31YjriQHZ+WsagE37ntKXhFwq+s4OWoRqZ7fA7HeU81zGDFHQi0VKg==}
+    engines: {node: '>=8'}
+    peerDependencies:
+      react: '>=16.3'
 
   '@rsbuild/core@1.0.1-rc.4':
     resolution: {integrity: sha512-JlouV5M+azv9YP6hD11rHeUns8Yk9sQN9QmMCKhutG75j1TCEKmrL0O7UmE89+uKlJTnL5Pyzy29TLO5ncIRjg==}
@@ -671,6 +680,10 @@ snapshots:
       '@octokit/openapi-webhooks-types': 8.3.0
       '@octokit/request-error': 6.1.4
       '@octokit/webhooks-methods': 5.1.0
+
+  '@primer/octicons-react@19.11.0(react@18.3.1)':
+    dependencies:
+      react: 18.3.1
 
   '@rsbuild/core@1.0.1-rc.4':
     dependencies:

@@ -5,16 +5,36 @@
 }
 
 :root {
+    /* Gray */
     --base-color-neutral-13: #1f2328;
     --base-color-neutral-11: #393f46;
     --base-color-neutral-8: #818b98;
     --base-color-neutral-3: #e6eaef;
+
+    /* Blue */
     --base-color-blue-5: #0969da;
+    --base-color-blue-0: #ddf4ff;
+    --base-color-blue-1: #b6e3ff;
+    --base-color-blue-4: #218bff;
+
+    /* Green */
+    --base-color-green-0: #dafbe1;
+    --base-color-green-1: #aceebb;
+    --base-color-green-4: #2da44e;
+    /* Yellow */
+    --base-color-yellow-0: #fff8c5;
+    --base-color-yellow-1: #fae17d;
+    --base-color-yellow-4: #bf8700;
+
+    /* Red */
+    --base-color-red-0: #ffebe9;
+    --base-color-red-1: #ffcecb;
+    --base-color-red-4: #fa4549;
 }
 
 html {
-    font-family: "Roboto", sans-serif;
-    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    font-size: 16px;
 }
 
 body {
@@ -28,6 +48,12 @@ a {
 
 a:hover {
     color: var(--base-color-blue-5);
+}
+
+p, span, a {
+    font-size: 1rem;
+    line-height: 1.5;
+    text-wrap: pretty;
 }
 
 main {
@@ -44,6 +70,7 @@ main {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-width: 860px;
 }
 
 .heatmap-wrapper {
