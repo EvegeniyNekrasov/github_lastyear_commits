@@ -23,8 +23,8 @@ interface ContributionHeatMapProps {
 /*
   TODO:
     [] - refactor the useEffect logic
-    [] - pass contributions number to cell
-    [] - create a hover for the cell to show contributions of the day
+    [X] - pass contributions number to cell
+    [X] - create a hover for the cell to show contributions of the day
     [] - create a cleanInitialData function to stablish every contribution to 0
 */
 
@@ -75,6 +75,7 @@ const ContributionHeatmap: React.FC<ContributionHeatMapProps> = ({ data }) => {
                     : getColorForContributions(day.contributions)
                 }
                 display={'block'}
+                contributions={day ? day.contributions : null}
               />
             ))}
           </WeekRow>

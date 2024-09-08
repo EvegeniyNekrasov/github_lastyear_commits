@@ -39,9 +39,8 @@ const App = () => {
       <div className="wrapper">
         <Banner>
           <span style={{ width: '80ch' }}>
-            This projects can only be used for repositories with fewer than
-            <b>10,000 commits</b>. If the repository contains <b>10,000</b> or
-            more commits, a 422 status code will be returned. For more details:{' '}
+            This projects can only be used for repositories with fewer than{' '}
+            <b>10,000 commits</b>. For more details visit:{' '}
             <a
               style={{ color: 'var(--base-color-blue-5)' }}
               href="https://docs.github.com/en/rest/metrics/statistics?apiVersion=2022-11-28"

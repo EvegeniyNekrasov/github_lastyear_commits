@@ -4,11 +4,17 @@ import Flex from './ui/Flex';
 
 const HeatMapLegend: React.FC = () => {
   return (
-    <Flex gap="8px">
+    <Flex gap="px">
       <p>less</p>
       <Flex>
         {gh_colors.map((color: string) => (
-          <Cell key={color} color={color} display={'block'} />
+          <Cell
+            noPopOver={false}
+            contributions={null}
+            key={color}
+            color={color}
+            display={'block'}
+          />
         ))}
       </Flex>
       <p>more</p>
