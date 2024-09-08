@@ -9,6 +9,8 @@
     --base-color-neutral-13: #1f2328;
     --base-color-neutral-11: #393f46;
     --base-color-neutral-8: #818b98;
+    --base-color-neutral-6: #d1d9e0;
+    --base-color-neutral-4: #e0e6eb;
     --base-color-neutral-3: #e6eaef;
 
     /* Blue */
@@ -94,13 +96,14 @@ main {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 4px;
 }
 
 .form-wrapper label input {
     height: 40px;
     border: 0.5px solid black;
     padding: 0px 14px;
+    border-radius: 4px;
 
 }
 
@@ -110,4 +113,10 @@ main {
     border: none;
     outline: none;
     cursor: pointer;
+    border-radius: 4px;
+    background-color: var(--base-color-neutral-3);
+    border: 1px solid var(--base-color-neutral-6);
+}
+.form-wrapper button:hover {
+    background-color: var(--base-color-neutral-4);
 }

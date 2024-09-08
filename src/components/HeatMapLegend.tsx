@@ -14,6 +14,7 @@ const HeatMapLegend: React.FC = () => {
             key={color}
             color={color}
             display={'block'}
+            date={new Date()}
           />
         ))}
       </Flex>

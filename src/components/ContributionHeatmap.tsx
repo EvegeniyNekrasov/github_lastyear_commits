@@ -20,18 +20,10 @@ interface ContributionHeatMapProps {
   data: RestApiResponse[] | null;
 }
 
-/*
-  TODO:
-    [] - refactor the useEffect logic
-    [X] - pass contributions number to cell
-    [X] - create a hover for the cell to show contributions of the day
-    [] - create a cleanInitialData function to stablish every contribution to 0
-*/
-
 const ContributionHeatmap: React.FC<ContributionHeatMapProps> = ({ data }) => {
   const heatMapData = generateHeatMapGrid(); // generate initial data to fill the heatmap
   const [initialData, setInitialData] = useState<HeatDayData[][]>(heatMapData);
-
+ 
   useEffect(() => {
     if (data) {
       // TODO: refactor this ugly logic
@@ -74,8 +66,10 @@ const ContributionHeatmap: React.FC<ContributionHeatMapProps> = ({ data }) => {
                     ? 'transparent'
                     : getColorForContributions(day.contributions)
                 }
+                noPopOver={day !== null}
                 display={'block'}
                 contributions={day ? day.contributions : null}
+                date={day !== null ? day.date : new Date()}
               />
             ))}
           </WeekRow>

@@ -10,6 +10,7 @@ const FlexContainer = styled.div<{
     gap: ${(props) => props.$gap};
     align-items: center;
     justify-content: ${(props) => props.$justifyContent};
+    width: 100%;
 `;
 
 interface FlexProps {

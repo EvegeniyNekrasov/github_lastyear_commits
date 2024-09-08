@@ -60,6 +60,7 @@ const currentYearDays = (): number => {
  *
  * @param dayNumberOfYear - The day number of the year, where 0 represents January 1st.
  * @param week - The week number of the year, starting from 1.
+ * @param date - The Date object representing the actual date of the current day.
  * @returns A `HeatDayData` object representing a day in the heat map grid.
  *
  * The `HeatDayData` object includes:
@@ -67,15 +68,18 @@ const currentYearDays = (): number => {
  * - `week`: The week number for the day.
  * - `dayOfWeek`: Calculated by mapping `dayNumberOfYear` to the corresponding day of the week.
  *   The result is in the range [0, 6], where 0 represents Sunday and 6 represents Saturday.
+ * - `date`: The actual date corresponding to the day.
  */
 const createHearDayData = (
   dayNumberOfYear: number,
   week: number,
+  date: Date,
 ): HeatDayData => {
   return {
     contributions: 0,
     week,
     dayOfWeek: (dayNumberOfYear + 6) % 7, // Mapping dayNumberOfYear to day of week (0: Sunady, 6: Saturday)
+    date,
   };
 };
 
@@ -87,21 +91,20 @@ const createHearDayData = (
  * objects, which are created for each day and week.
  *
  * The function performs the following steps:
- * 1. Initializes a 2D array (`heatMapData`) with null values.
- * 2. Determines the starting day of the year and iterates through weeks and days.
- * 3. For each valid day, a `HeatDayData` object is created and inserted into the grid.
- * 4. The `dayOfWeek` is incremented cyclically from 0 (Sunday) to 6 (Saturday).
- * 5. Stops populating the grid once the number of days exceeds the total days in the year.
+ * 1. Initializes a 2D array (`heatMapData`) where each day of the year is a row and each week is a column.
+ * 2. Determines the starting day of the year by creating a `Date` object for January 1st.
+ * 3. Iterates through the grid, creating and populating `HeatDayData` for each valid day.
+ * 4. Stops when the total number of days matches the number of days in the year.
  *
  * @returns A 2D array (`HeatDayData[][]`) representing the heat map grid for the year.
  *
- * Each element in the grid is a `HeatDayData` object, or `null` if no data is assigned.
+ * Each element in the grid is a `HeatDayData` object representing the day's data, or `null` if not assigned.
  *
- * Note:
- * - The grid dimensions are based on constants `DAYS` (number of days in the year) and `WEEKS` (number of weeks in the year).
- * - `createHeatDayData` is used to initialize each day's data in the grid.
+ * Notes:
+ * - `DAYS` is the number of days in the year.
+ * - `WEEKS` is the number of weeks in the year.
+ * - The `createHeatDayData` function is used to create the data for each day in the grid.
  */
-
 export const generateHeatMapGrid = () => {
   const heatMapData: HeatDayData[][] = Array.from({ length: DAYS }, () =>
     Array(WEEKS).fill(null),
@@ -121,7 +124,10 @@ export const generateHeatMapGrid = () => {
         return heatMapData;
       }
 
-      heatMapData[day][week] = createHearDayData(dayOfWeek, week + 1);
+      const date = new Date(startOfYear);
+      date.setDate(startOfYear.getDate() + currentDay);
+
+      heatMapData[day][week] = createHearDayData(dayOfWeek, week + 1, date);
       dayOfWeek = (dayOfWeek + 1) % 7;
 
       currentDay++;
@@ -206,4 +212,50 @@ export const getWeekNumberFromTimestamp = (timestamp: number): number => {
   const weekNumber = Math.ceil((days + 1) / 7);
 
   return weekNumber;
+};
+
+/**
+ * Formats a given `Date` object as a string with an ordinal suffix appended to the day.
+ *
+ * The format returned is in the form: `Month Day{ordinal}.`, where the month is the full name
+ * and the day is followed by its appropriate ordinal suffix (e.g., 1st, 2nd, 3rd, 4th, etc.).
+ *
+ * Ordinal suffix rules:
+ * - Days 1, 21, 31 get the suffix "st"
+ * - Days 2, 22 get the suffix "nd"
+ * - Days 3, 23 get the suffix "rd"
+ * - All other days get the suffix "th"
+ * - Special case: Days 11, 12, 13 get the suffix "th" due to the unique rule for those numbers.
+ *
+ * @param date - A `Date` object representing the date to be formatted.
+ * @returns A string representing the formatted date, including the ordinal suffix for the day.
+ *
+ * Example:
+ * ```
+ * const date = new Date(2024, 6, 21); // July 21st, 2024
+ * const formattedDate = formatDateWithOrdinal(date);
+ * console.log(formattedDate); // "July 21st."
+ * ```
+ */
+export const formatDateWithOrdinal = (date: Date): string => {
+  const day = date.getDate();
+
+  const getOrdinalSuffix = (day: number): string => {
+    if (day > 3 && day < 21) return 'th'; // Special case for 11-13
+    switch (day % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  };
+
+  const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
+    date,
+  );
+  return `${month} ${day}${getOrdinalSuffix(day)}.`;
 };

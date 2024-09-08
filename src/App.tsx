@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { RestApiResponse } from './types';
 
+import { SearchIcon } from '@primer/octicons-react';
+import styled from 'styled-components';
+
 import ContributionHeatmap from './components/ContributionHeatmap';
 import useGetContributions from './hooks/useGetContributions';
 
@@ -56,6 +59,7 @@ const App = () => {
             <span>Owner</span>
             <input
               value={owner}
+              placeholder="owner name..."
               onChange={(e) => setOwner(e.target.value)}
               type="text"
             />
@@ -65,18 +69,22 @@ const App = () => {
             <span>Repo</span>
             <input
               value={repo}
+              placeholder='repo name...'
               type="text"
               onChange={(e) => setRepo(e.target.value)}
             />
           </label>
           <button disabled={isFetching} type="button" onClick={handleFetchData}>
             {isFetching ? (
-              <Flex gap="8px">
+              <Flex gap="8px" justifyContent="center">
                 <LoadingSpinner />
                 <span>Loading...</span>
               </Flex>
             ) : (
-              'Search'
+              <Flex justifyContent="center" gap="12px">
+                <SearchIcon size={16} />
+                <span>Search</span>
+              </Flex>
             )}
           </button>
         </div>

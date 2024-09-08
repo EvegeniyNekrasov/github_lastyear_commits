@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { formatDateWithOrdinal } from '../../utils/common';
 
 const CellDiv = styled.div<{ $color: string; $display: string }>`
   width: 10px;
@@ -32,11 +33,13 @@ const Cell = ({
   display,
   contributions,
   noPopOver = true,
+  date
 }: {
   color: string;
   display: string;
   contributions: number | null;
   noPopOver?: boolean;
+  date: Date
 }) => {
   const [isPopOverVisible, setIsPopOverVisible] = useState(false);
 
@@ -53,7 +56,7 @@ const Cell = ({
       >
         <PopOverDiv $visible={isPopOverVisible && noPopOver}>
           {contributions === null || contributions === 0 ? 'No' : contributions}{' '}
-          contributions on October 11h
+          contributions on {formatDateWithOrdinal(date)}
         </PopOverDiv>
       </CellDiv>
     </>
